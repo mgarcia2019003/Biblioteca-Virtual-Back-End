@@ -1,0 +1,11 @@
+{
+  "name": "biblioteca-digital-back",
+  "version": "1.0.0",
+  "description": "Biblioteca virtual para recopilar libros y revistas.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Marcos García",
+  "license": "MIT"
+}
