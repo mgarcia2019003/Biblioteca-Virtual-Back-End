@@ -4,16 +4,16 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var magazineSchema = Schema({
-    author: String,
-    title: String,
-    edition: String,
-    description: String,
-    frecuency: String,
-    ejemplar: Number,
-    themes: String,
-    words: [],
-    copies: Number,
-    avalibles: Number
+    authorMagazine: String,
+    titleMagazine: String,
+    editionMagazine: String,
+    descriptionMagazine: String,
+    frecuencyMagazine: String,
+    ejemplarMagazine: Number,
+    themesMagazine: String,
+    wordsMagazine: [],
+    copiesMagazines: Number,
+    avaliblesMagazines: Number
 });
 
 module.exports = mongoose.model('magazine', magazineSchema);

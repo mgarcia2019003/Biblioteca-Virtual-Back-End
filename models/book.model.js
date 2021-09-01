@@ -4,14 +4,14 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var bookSchema = Schema({
-    author: String,
-    title: String,
-    edition: String,
-    words: [],
-    description: String,
-    themes: String,
-    copies: Number,
-    avalibles: Number
+    authorBook: String,
+    titleBook: String,
+    editionBook: String,
+    wordsBook: [],
+    descriptionBook: String,
+    themesBook: String,
+    copiesBooks: Number,
+    avaliblesBooks: Number
 });
 
 module.exports = mongoose.model('book', bookSchema);
