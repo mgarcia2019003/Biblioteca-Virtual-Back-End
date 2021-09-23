@@ -13,7 +13,8 @@ var magazineSchema = Schema({
     themesMagazine: String,
     wordsMagazine: [],
     copiesMagazines: Number,
-    avaliblesMagazines: Number
+    avaliblesMagazines: Number,
+    cover: String
 });
 
 module.exports = mongoose.model('magazine', magazineSchema);
