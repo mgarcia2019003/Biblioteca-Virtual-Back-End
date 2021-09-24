@@ -64,6 +64,7 @@ function signUp(req, res){
                         user.rol = "USER";
                         user.phone = params.phone; 
                         user.email = params.email;
+                        user.loans = 0;
 
                         user.save((err, userSaved) => {
                             if(err){
@@ -289,7 +290,8 @@ function creatUser_ByAdmin(req, res){
                             user.rol = params.rol;
                             user.phone = params.phone; 
                             user.email = params.email;
-                            
+                            user.loans = 0;
+
                             user.save((err, userSaved) => {
                                 if(err){
                                     return res.status(500).send({message:'Error al intentar guardar'});

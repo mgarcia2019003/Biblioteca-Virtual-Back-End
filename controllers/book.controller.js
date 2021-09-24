@@ -29,6 +29,7 @@ function createBook(req, res){
                     book.themesBook = params.themesBook;
                     book.copiesBooks = params.copiesBooks;
                     book.avaliblesBooks = params.avaliblesBooks;
+                    book.loanBooks = 0;
                     book.save((err, bookSaved) => {
                         if(err){
                             return res.status(400).send({message:'Error general al intentar crear un libro'});

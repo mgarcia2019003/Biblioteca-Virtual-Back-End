@@ -29,6 +29,7 @@ function createMagazine(req, res){
                     magazine.themesMagazine = params.themesMagazine;
                     magazine.copiesMagazines = params.copiesMagazines;
                     magazine.avaliblesMagazines = params.avaliblesMagazines;
+                    magazine.loanMagazines = 0;
                     magazine.save((err, magazineSaved) => {
                         if(err){
                             return res.status(400).send({message:'Error general al intentar crear una revista'});
