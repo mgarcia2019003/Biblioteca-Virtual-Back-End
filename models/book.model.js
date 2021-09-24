@@ -12,7 +12,8 @@ var bookSchema = Schema({
     themesBook: String,
     copiesBooks: Number,
     avaliblesBooks: Number,
-    cover: String
+    cover: String,
+    loanBooks: Number
 });
 
 module.exports = mongoose.model('book', bookSchema);
