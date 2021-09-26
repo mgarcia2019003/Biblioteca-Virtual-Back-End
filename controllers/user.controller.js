@@ -287,6 +287,7 @@ function creatUser_ByAdmin(req, res){
                             user.name = params.name;
                             user.lastname = params.lastname;
                             user.username = params.username.toLowerCase();
+                            user.identificador = params.identificador;
                             user.rol = params.rol;
                             user.phone = params.phone; 
                             user.email = params.email;
@@ -315,7 +316,7 @@ function creatUser_ByAdmin(req, res){
 }
 
 function listUser(req, res){
-    User.find({rol: "USER"}).exec((err, usersFind) => {
+    User.find({rol: "user"}).exec((err, usersFind) => {
         if(err){
             return res.status(500).send({message:'Error al buscar usuarios'});
         }else if(usersFind){
