@@ -24,11 +24,13 @@ function createMagazine(req, res){
                     let magazine = new Magazine();
                     magazine.authorMagazine = params.authorMagazine;
                     magazine.titleMagazine = params.titleMagazine;
-                    magazine.editionMagazine = editionMagazine;
+                    magazine.editionMagazine = params.editionMagazine;
                     magazine.descriptionMagazine = params.descriptionMagazine;
                     magazine.themesMagazine = params.themesMagazine;
+                    magazine.frecuencyMagazines = params.frecuencyMagazines;
                     magazine.copiesMagazines = params.copiesMagazines;
                     magazine.avaliblesMagazines = params.avaliblesMagazines;
+                    magazine.ejemplarMagazine = params.ejemplarMagazine;
                     magazine.loanMagazines = 0;
                     magazine.save((err, magazineSaved) => {
                         if(err){

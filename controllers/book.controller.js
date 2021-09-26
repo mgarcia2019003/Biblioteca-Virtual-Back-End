@@ -24,7 +24,6 @@ function createBook(req, res){
                     let book = new Book();
                     book.authorBook = params.authorBook;
                     book.titleBook = params.titleBook;
-                    book.editionBook = editionBook;
                     book.descriptionBook = params.descriptionBook;
                     book.themesBook = params.themesBook;
                     book.copiesBooks = params.copiesBooks;
