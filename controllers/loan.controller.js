@@ -8,7 +8,7 @@ var Loan = require('../models/loan.model');
 var fs = require('fs');
 var path = require('path');
 
-function createLoan(req, res){
+function createBookLoan(req, res){
     var userId = req.params.id;
     var bookId = req.params.idB;
     var magazineId = req.params.idM;
@@ -17,8 +17,7 @@ function createLoan(req, res){
 
     if(userId != req.user.sub){
         return res.status(400).send({message:'No posees permisos para hacer esta accion'});
-    }else{  
-        if(idB == bookId){
+    }else{
             Book.findOne({_id: bookId, user: userId}, (err, bookFind)=>{
                 if(err){
                     return res.status(500).send({message: 'Error general al buscar el libro'});
@@ -29,7 +28,6 @@ function createLoan(req, res){
                         }else if(loanFind){
                             return res.send({message: 'El prestamo ya fue hecho'});
                         }else{
-                            if(book.avaliblesBooks>0){
                                 let loan = new Loan();
                                 loan.user = userId;
                                 loan.bookLoan = bookId;
@@ -64,17 +62,24 @@ function createLoan(req, res){
                                         return res.send({message: 'No se pudo agregar el prestamo con exito'});
                                     }
                                 })
-                            }else{
-                                return res.send({message: 'No hay copias disponibles'});
-                            }
                         }
                     })                
                 }else{
                     return res.status(404).send({message:'No se encontro el prestamo deseada'});
                 }
             });
-        }else if(idM == magazineId){
+    }
+}
 
+function createMagazineLoan(req, res){
+    var userId = req.params.id;
+    var magazineId = req.params.idM;
+    let update = req.body;
+    var params = req.body;
+
+    if(userId != req.user.sub){
+        return res.status(400).send({message:'No posees permisos para hacer esta accion'});
+    }else{
             Magazine.findOne({_id: magazineId, user: userId}, (err, magazineFind)=>{
                 if(err){
                     return res.status(500).send({message: 'Error general al buscar la revista'});
@@ -85,7 +90,6 @@ function createLoan(req, res){
                         }else if(loanFind){
                             return res.send({message: 'El prestamo ya fue hecho'});
                         }else{
-                            if(magazine.avaliblesMagazines>0){
                                 let loan = new Loan();
                                 loan.user = userId;
                                 loan.magazineLoan = magazineId;
@@ -104,7 +108,7 @@ function createLoan(req, res){
                                                     if(err){
                                                         return res.status(500).send({message:'Error al actualizar la revista'});
                                                     }else if(magazineUpdate){
-                                                        book.avaliblesMagazines = book.avaliblesMagazines - 1;
+                                                        magazine.avaliblesMagazines = magazine.avaliblesMagazines - 1;
                                                         return res.status(200).send({message:'Revista actualizada', magazineUpdate});
                                                     }else{
                                                         return res.status(404).send({message:'No se pudo actualizar la revista'});
@@ -120,77 +124,15 @@ function createLoan(req, res){
                                         return res.send({message: 'No se pudo agregar el prestamo con exito'});
                                     }
                                 })
-                            }else{
-                                return res.send({message: 'No hay copias disponibles'});
-                            }
                         }
                     })                
                 }else{
                     return res.status(404).send({message:'No se encontro el prestamo deseada'});
                 }
             });
-
-        }
     }
 }
 
-function deleteLoan(req, res){
-    
-    var userId = req.params.userId;
-    var teamId = req.params.teamId;
-    var params = req.body;
-
-    if(userId != req.user.sub){
-        return res.status(400).send({message:'No posees permisos para hacer esta accion'});
-    }else{
-        if(params.password){
-            User.findById(userId, (err, userFind) => {
-                if(err){
-                    return res.status(500).send({message:'Error al buscar equipo'});
-                }else if(userFind){
-                    League.findOne({_id: leagueId}, (err, leagueFind) => {
-                        if(err){
-                            return res.status(500).send({message:'Error al buscar la liga'});
-                        }else if(leagueFind){
-                            bcrypt.compare(params.password, userFind.password, (err, equalsPassword) => {
-                                if(err){
-                                    return res.status(500).send({message:'Error al comparar contraseñas'});
-                                }else if(equalsPassword){
-                                    League.findByIdAndUpdate({_id: leagueId, teams: teamId}, {$pull:{teams : teamId}}, {new: true}, (err, leagueUpdated)=>{
-                                        if(err){
-                                            return res.status(500).send({message:'Error general al actualizar la liga'});
-                                        }else if(leagueUpdated){
-                                            Team.findByIdAndRemove({_id: teamId}, (err, teamRemoved) => {
-                                                if(err){
-                                                    return res.status(500).send({message:'Error al eliminar el equipo'});
-                                                }else if(teamRemoved){
-                                                    return res.send({message: 'El equipo fue eliminado', teamRemoved});
-                                                }else{
-                                                    return res.status(404).send({message:'No se pudo eliminar el equipo ya fue eliminado'});
-                                                }
-                                            })
-                                        }else{
-                                            return res.status(404).send({message:'No se pudo eliminar el equipo de la liga'});
-                                        }
-                                    })
-                                    
-                                }else{
-                                    return res.status(404).send({message:'No hay coincidencias en la password'});
-                                }
-                            })
-                        }else{
-                            return res.status(404).send({message:'Tu password es incorrecta'});
-                        }
-                    })
-                }else{
-                    return res.status(404).send({message:'No se encontro el equipo'});
-                }
-            })                        
-        }else{
-            return res.status(400).send({message:'No olvides colocar tu password de administrador'});
-        }
-    }
-}
 
 function listLoan(req, res){
     Loan.find({}).exec((err, loanFind)=>{
@@ -205,7 +147,7 @@ function listLoan(req, res){
 }
 
 module.exports = {
-    createLoan,
-    deleteLoan,
+    createBookLoan,
+    createMagazineLoan,
     listLoan,
 }
