@@ -47,6 +47,7 @@ function createBookLoan(req, res){
                                                         return res.status(500).send({message:'Error al actualizar el libro'});
                                                     }else if(bookUpdate){
                                                         book.avaliblesBooks = book.avaliblesBooks - 1;
+                                                        book.loanBooks = book.loanBooks + 1;
                                                         return res.status(200).send({message:'Libro actualizado', bookUpdate});
                                                     }else{
                                                         return res.status(404).send({message:'No se pudo actualizar el libro'});
@@ -109,6 +110,7 @@ function createMagazineLoan(req, res){
                                                         return res.status(500).send({message:'Error al actualizar la revista'});
                                                     }else if(magazineUpdate){
                                                         magazine.avaliblesMagazines = magazine.avaliblesMagazines - 1;
+                                                        magazine.loanMagazines = magazine.loanMagazines + 1;
                                                         return res.status(200).send({message:'Revista actualizada', magazineUpdate});
                                                     }else{
                                                         return res.status(404).send({message:'No se pudo actualizar la revista'});
