@@ -239,6 +239,24 @@ function getImage(req, res){
     })
 }
 
+
+function sortMagazine(req, res){
+    var orden = Number;
+
+    Magazine.find({}).exec((err, magazineFind)=>{
+        if(err){
+            return res.status(500).send({message: 'Error general al listar revistas'});
+        }else if(magazineFind){
+            orden.sort(bookFind.loanMagazines);
+        }else{
+            return res.status(404).send({message:'No se encontraron revistas registradas'});
+        }
+    })
+
+    return res.send({message: 'Revistas encontradas', magazineFind});
+}
+
+
 module.exports = {
     createMagazine,
     deleteMagazine,
@@ -248,4 +266,5 @@ module.exports = {
     getMagazineById,
     uploadImage,
     getImage,
+    sortMagazine
 }

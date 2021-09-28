@@ -237,6 +237,23 @@ function getImage(req, res){
     })
 }
 
+
+function sortBook(req, res){
+    var orden = Number;
+
+    Book.find({}).exec((err, bookFind)=>{
+        if(err){
+            return res.status(500).send({message: 'Error general al listar libros'});
+        }else if(bookFind){
+            orden.sort(bookFind.loanBooks);
+        }else{
+            return res.status(404).send({message:'No se encontraron libros registrados'});
+        }
+    })
+
+    return res.send({message: 'Libros encontrados', bookFind});
+}
+
 module.exports = {
     createBook,
     deleteBook,
@@ -246,4 +263,5 @@ module.exports = {
     getBookById,
     uploadImage,
     getImage,
+    sortBook
 }
