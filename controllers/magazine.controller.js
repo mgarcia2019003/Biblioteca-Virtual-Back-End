@@ -14,7 +14,6 @@ function createMagazine(req, res){
         return res.status(401).send({message:'No tienes permiso para agregar revistas'});
     }else{
         if(params.titleMagazine && params.copiesMagazines && params.avaliblesMagazines){
-            params.titleMagazine = params.titleMagazine.toLowerCase();
             Magazine.findOne({titleMagazine : params.titleMagazine}, (err, magazineFind)=>{
                 if(err){
                     return res.status(500).send({message: 'Error general al buscar revista con el mismo nombre'});
@@ -96,7 +95,7 @@ function updateMagazine(req, res){
         return res.status(404).send({message:'No tienes permiso para actualizar esta revista'});
     }else{
         if(update.authorMagazine){
-            update.authorMagazine = update.authorMagazine.toLowerCase();
+            update.authorMagazine = update.authorMagazine;
 
             Magazine.findOne({authorMagazine: update.authorMagazine}, (err, magazineFind) => {
                 if(err){
@@ -134,7 +133,7 @@ function listMagazine(req, res){
         if(err){
             return res.status(500).send({message: 'Error general al listar revistas'});
         }else if(magazineFind){
-            return res.send({message: 'Revistas encontradas', magazineFind});
+            return res.send({message: 'Revistas encontradas',magazines: magazineFind});
         }else{
             return res.status(404).send({message:'No se encontraron revistas registradas'});
         }

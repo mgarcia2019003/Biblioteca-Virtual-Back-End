@@ -14,7 +14,6 @@ function createBook(req, res){
         return res.status(401).send({message:'No tienes permiso para agregar libros'});
     }else{
         if(params.titleBook && params.copiesBooks && params.avaliblesBooks){
-            params.titleBook = params.titleBook.toLowerCase();
             Book.findOne({titleBook : params.titleBook}, (err, bookFind)=>{
                 if(err){
                     return res.status(500).send({message: 'Error general al buscar libro con el mismo nombre'});
@@ -93,7 +92,7 @@ function updateBook(req, res){
         return res.status(404).send({message:'No tienes permiso para actualizar este libro'});
     }else{
         if(update.authorBook){
-            update.authorBook = update.authorBook.toLowerCase();
+            update.authorBook = update.authorBook;
 
             Book.findOne({authorBook: update.authorBook}, (err, bookFind) => {
                 if(err){
@@ -131,7 +130,7 @@ function listBook(req, res){
         if(err){
             return res.status(500).send({message: 'Error general al listar libros'});
         }else if(bookFind){
-            return res.send({message: 'Libros encontrados', bookFind});
+            return res.send({message: 'Libros encontrados',books: bookFind});
         }else{
             return res.status(404).send({message:'No se encontraron libros registrados'});
         }
@@ -245,13 +244,12 @@ function sortBook(req, res){
         if(err){
             return res.status(500).send({message: 'Error general al listar libros'});
         }else if(bookFind){
-            orden.sort(bookFind.loanBooks);
+            return res.send({message: 'Libros encontrados', bookFind});
         }else{
             return res.status(404).send({message:'No se encontraron libros registrados'});
         }
     })
 
-    return res.send({message: 'Libros encontrados', bookFind});
 }
 
 module.exports = {
