@@ -10,7 +10,7 @@ var api = express.Router();
 
 api.post('/:id/createBook', [mdAuth.ensureAuth], bookController.createBook);
 api.put('/:id/updateBook/:idB', [mdAuth.ensureAuth], bookController.updateBook);
-api.post('/:id/deleteBook/:idB', mdAuth.ensureAuth, bookController.deleteBook);
+api.put('/:id/deleteBook/:idB', mdAuth.ensureAuth, bookController.deleteBook);
 api.get('/listBook', bookController.listBook);
 api.get('/sortBook', bookController.sortBook);
 api.post('/getBook', bookController.getBook);

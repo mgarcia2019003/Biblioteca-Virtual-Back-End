@@ -7,7 +7,8 @@ var mdAuth = require('../middleware/authenticated');
 var api = express.Router();
 
 api.post('/:id/createBookLoan/:idB', loanController.createBookLoan);
-/*api.post('/:id/createMagazineLoan/:idM', loanController.createMagazineLoan);
-api.get('/listLoan', loanController.listLoan);*/
+api.post('/:id/createMagazineLoan/:idM', loanController.createMagazineLoan);
+api.post('/:id/deleteBookLoan/:idB/idL', loanController.deleteBookLoan);
+/*api.get('/listLoan', loanController.listLoan);*/
 
 module.exports = api;

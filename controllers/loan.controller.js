@@ -9,6 +9,228 @@ var fs = require('fs');
 var path = require('path');
 
 
+function createBookLoan(req, res){
+    var userId = req.params.id;
+    var bookId = req.params.idB;
+    let update = req.body;
+    var params = req.body;
+
+        if(userId && bookId){
+            Loan.findOne({user : userId, bookLoan : bookId}, (err, loanFind)=>{
+                if(err){
+                    return res.status(400).send({message:'Error general al buscar el prestamo'});
+                }else if(loanFind){
+                    return res.send({message: 'ALERTA: ¡Ya has rentado este libro!'});
+                }else{
+                    let loan = new Loan();
+                    loan.user = userId;
+                    loan.bookLoan = bookId;
+                    loan.save((err, loanSaved)=>{
+                        if(err){
+                            return res.status(400).send({message:'Error general al guardar el prestamo'});
+                        }else if(loanSaved){
+                            Book.findByIdAndUpdate(bookId, {$push:{loans: loanSaved._id}}, {new: true}, (err, loanPush)=>{
+                                if(err){
+                                    return res.status(400).send({message:'Error general al guardar el prestamo en el libro'});
+                                }else if(loanPush){
+                                    /*loanInBook();
+                                    loanInUser();*/
+                                    Book.findOne({authorBook: update.authorBook}, (err, bookFind) => {
+                                        if(err){
+                                            return res.status(500).send({message:'Error al buscar libro'});
+                                        }else if(bookFind && bookFind._id != bookId){
+                                            return res.send({message: 'Ya existente un libro con este nombre'})
+                                        }else{
+                                            Book.findOneAndUpdate({_id: bookId, user:userId}, update, {new: true}, (err, bookUpdate) => {
+                                                if(err){
+                                                    return res.status(500).send({message:'Error al actualizar el libro'});
+                                                }else if(bookUpdate){
+                                                    bookUpdate.bookLoan = bookUpdate.bookLoan + 1;
+                                                    bookUpdate.avaliblesBooks = bookUpdate.bookLoan - 1;
+                                                }else{
+                                                    return res.status(404).send({message:'No se pudo actualizar el libro'});
+                                                }
+                                            })
+                                        }
+                                    })
+
+                                    /**/
+                                    User.findOne({name: update.name}, (err, userFind) => {
+                                        if(err){
+                                            return res.status(500).send({message:'Error al buscar usuario'});
+                                        }else if(userFind && userFind._id != userId){
+                                            return res.send({message: 'Ya existente un usuario con este nombre'})
+                                        }else{
+                                            User.findByIdAndUpdate(userId, update, {new: true}, (err, userUpdated)=>{
+                                                if(err){
+                                                    return res.status(500).send({message: 'Error general al actualizar'});
+                                                }else if(userUpdated){
+                                                    userUpdated.loans =  userUpdated.loans + 1;
+                                                }else{
+                                                    return res.send({message: 'No se pudo actualizar al usuario'});
+                                                }
+                                            })
+                                        }
+                                    })
+                                    
+                                    return res.send({message:'El prestamo se guardo satisfactoriamente', loanPush});
+                                }else{
+                                    console.log(topicPush)
+                                    return res.send({message: 'No se pudo guardar el prestamo en el libro'});
+                                }
+                            })
+                        }else{
+                            return res.send({message: 'No se pudo guardar el prestamo'});
+                        }
+                    });
+                }
+            });
+    }
+}
+
+function createMagazineLoan(req, res){
+    var userId = req.params.id;
+    var magazineId = req.params.idB;
+    
+    var params = req.body;
+
+        if(userId && magazineId){
+            Loan.findOne({user : userId, magazineLoan : magazineId}, (err, loanFind)=>{
+                if(err){
+                    return res.status(400).send({message:'Error general al buscar el prestamo'});
+                }else if(loanFind){
+                    return res.send({message: 'ALERTA: ¡Ya has rentado esta revista!'});
+                }else{
+                    let loan = new Loan();
+                    loan.user = userId;
+                    loan.magazineLoan = magazineId;
+                    loan.save((err, loanSaved)=>{
+                        if(err){
+                            return res.status(400).send({message:'Error general al guardar el prestamo'});
+                        }else if(loanSaved){
+                            Magazine.findByIdAndUpdate(magazineId, {$push:{loans: loanSaved._id}}, {new: true}, (err, loanPush)=>{
+                                if(err){
+                                    return res.status(400).send({message:'Error general al guardar el prestamo en el libro'});
+                                }else if(loanPush){
+                                    return res.send({message:'El prestamo se guardo satisfactoriamente', loanPush});
+                                }else{
+                                    console.log(topicPush)
+                                    return res.send({message: 'No se pudo guardar el prestamo en el libro'});
+                                }
+                            })
+                        }else{
+                            return res.send({message: 'No se pudo guardar el prestamo'});
+                        }
+                    });
+                }
+            });
+    }
+}
+
+function deleteBookLoan(req, res){
+    var userId = req.params.id;
+    var bookId = req.params.idB;
+    var loanId = req.params.idL;
+    var params =  req.body;
+
+    if(userId != req.user.sub){
+        return res.status(400).send({message:'No posees permisos para hacer esta accion'});
+    }else{
+        User.findById(userId, (err, userFind)=>{
+            if(err){
+                return res.status(500).send({message:'Error general al buscar el usuario'});
+            }else if (userFind){
+                Book.findOne({_id : bookId, user: userId}, (err, bookFind)=>{
+                    if(err){
+                        return res.status(500).send({message:'Error general al buscar el libro'});
+                    }else if(bookFind){
+                        Book.findOneAndUpdate({_id : bookId}, {$pull: {loans: loanId}}, {new : true}, (err, bookUpdated)=>{
+                            if(err){
+                                return res.status(500).send({message:'Error general al actualizar el usuario'});
+                            }else if(bookUpdated){
+                                Loan.findByIdAndDelete(loanId, (err, loanDelete)=>{
+                                    if(err){
+                                        return res.status(500).send({message:'Error general al eliminar el prestamo'});
+                                    }else if(loanDelete){
+                                        return res.send({message: 'El prestamo fue eliminado', loanDelete});
+                                    }else{
+                                        return res.status(404).send({message:'No se pudo eliminar el prestamo'});
+                                    }
+                                });
+                            }else{
+                                return res.status(404).send({message:'No se pudo eliminar el libro del administrador'});
+                            }
+                        })
+                    }else{
+                        return res.status(400).send({message:'No se pudo eliminar el prestamo del libro'});
+                    }
+                })
+            }else{
+                return res.status(404).send({message:'No se pudo encontrar el libro deseado'});
+            }
+        });
+    }
+}
+
+
+
+
+
+/*
+function createBookLoan(req, res){
+
+    var userId = req.params.id;
+    var bookId = req.params.idB;
+    var params = req.body; 
+
+        Book.findOne({_id : bookId}, (err, bookFind)=>{
+            if(err){
+                res.status(500).send({message:'Error general al buscar los usuarios'});
+            }else if(bookFind){
+                loanInBook(bookId);
+                loanInUser(userId);
+            }
+        });
+}
+
+function loanInBook(){
+
+    Book.findOne({authorBook: update.authorBook}, (err, bookFind) => {
+        if(err){
+            return res.status(500).send({message:'Error al buscar libro'});
+        }else if(bookFind && bookFind._id != bookId){
+            return res.send({message: 'Ya existente un libro con este nombre'})
+        }else{
+            Book.findOneAndUpdate({_id: bookId, user:userId}, update, {new: true}, (err, bookUpdate) => {
+                if(err){
+                    return res.status(500).send({message:'Error al actualizar el libro'});
+                }else if(bookUpdate){
+                    book.bookLoan =  book.bookLoan - 1;
+                    return res.status(200).send({message:'Libro actualizado', bookUpdate});
+                }else{
+                    return res.status(404).send({message:'No se pudo actualizar el libro'});
+                }
+            })
+        }
+    })
+}
+
+function loanInUser(){
+    User.findByIdAndUpdate(userId, update, {new: true}, (err, userUpdated)=>{
+        if(err){
+            return res.status(500).send({message: 'Error general al actualizar'});
+        }else if(userUpdated){
+            user.loans =  user.loans + 1;
+            return res.send({message: 'Usuario actualizado', userUpdated});
+        }else{
+            return res.send({message: 'No se pudo actualizar al usuario'});
+        }
+    })
+}
+
+
+
+
 
 function createBookLoan(req, res){
         var userId = req.params.id;
@@ -130,7 +352,7 @@ function loansUsuario(userId){
 
 
 
-/*function createBookLoan(req, res){
+function createBookLoan(req, res){
     var userId = req.params.id;
     var bookId = req.params.idB;
     let update = req.body;
@@ -267,6 +489,7 @@ function listLoan(req, res){
 
 module.exports = {
     createBookLoan,
-    /*createMagazineLoan,
-    listLoan,*/
+    createMagazineLoan,
+    deleteBookLoan
+    /*listLoan,*/
 }
