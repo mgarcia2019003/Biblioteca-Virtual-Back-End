@@ -64,11 +64,7 @@ function deleteMagazine(req, res){
     if(userId != req.user.sub){
         return res.status(400).send({message:'No posees permisos para eliminar la revista'});
     }else{
-        User.findOneAndUpdate({_id: userId},
-            {$pull:{magazines: magazineId}}, {new:true}, (err, magazinePull)=>{
-                if(err){
-                    return res.status(500).send({message: 'Error general al eliminar la revista'});
-                }else if(magazinePull){
+        
                     Magazine.findByIdAndRemove({_id: magazineId},(err, magazineRemoved) => {
                         if(err){
                             return res.status(500).send({message:'Error al eliminar la revista'});
@@ -78,11 +74,6 @@ function deleteMagazine(req, res){
                             return res.status(404).send({message:'No se pudo eliminar la revista o ya fue eliminada'});
                         }
                     })
-                }else{
-                    return res.status(500).send({message: 'No se pudo eliminar la revista'});
-                }
-            }
-        ).populate('magazines')
     }
 }
 

@@ -46,7 +46,7 @@ function signUp(req, res){
     var user = new User();
     var params = req.body;
 
-    if(params.name && params.lastname && params.username && params.phone && params.email && params.password){
+    if(params.name && params.lastname && params.username && params.identificador && params.email && params.password){
         User.findOne({username: params.username}, (err, userFind) => {
             if(err){
                 return res.status(500).send({message:'Error al buscar al usuario'});
@@ -59,10 +59,10 @@ function signUp(req, res){
                     }else if(passwordHash){
                         user.password = passwordHash;
                         user.name = params.name;
+                        user.identificador = params.identificador;
                         user.lastname = params.lastname;
                         user.username = params.username.toLowerCase();
-                        user.rol = "USER";
-                        user.phone = params.phone; 
+                        user.rol = "user";
                         user.email = params.email;
                         user.loans = 0;
 

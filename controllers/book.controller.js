@@ -61,11 +61,6 @@ function deleteBook(req, res){
     if(userId != req.user.sub){
         return res.status(400).send({message:'No posees permisos para eliminar el libro'});
     }else{
-        User.findOneAndUpdate({_id: userId},
-            {$pull:{books: bookId}}, {new:true}, (err, bookPull)=>{
-                if(err){
-                    return res.status(500).send({message: 'Error general al eliminar el libro'});
-                }else if(bookPull){
                     Book.findByIdAndRemove({_id: bookId},(err, bookRemoved) => {
                         if(err){
                             return res.status(500).send({message:'Error al eliminar el libro'});
@@ -75,11 +70,7 @@ function deleteBook(req, res){
                             return res.status(404).send({message:'No se pudo eliminar el libro o ya fue eliminada'});
                         }
                     })
-                }else{
-                    return res.status(500).send({message: 'No se pudo eliminar el libro'});
-                }
-            }
-        ).populate('books')
+                
     }
 }
 
